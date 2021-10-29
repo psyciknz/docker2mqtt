@@ -71,6 +71,15 @@ def mqtt_send(topic, payload, retain=False):
     except Exception as e:
         print(f'MQTT Publish Failed: {e}')
 
+def mqtt_receive(client, userdata, msg):
+    """receive a command to operate on docker instance"""
+    try:
+        print("received a message on %s with message ""%s""" % topic,msg)
+        
+    except Exception as ex:
+        print("Exception in receive message: " + str(ex))
+        
+
 
 def readline_thread():
     """Run docker events and continually read lines from it.
