@@ -1,2 +1,6 @@
 DOCKER_RUN
 .note
+.env
+.gitignore
+.vs/VSWorkspaceState.json
+.gitignore

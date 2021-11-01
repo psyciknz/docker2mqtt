@@ -17,7 +17,7 @@ from time import sleep, time
 
 import paho.mqtt.client
 
-__version__ = "2.1.4"
+__version__ = "2.2.0"
 
 DEBUG = environ.get('DEBUG', '0') 
 DEBUGSTAT = environ.get('DEBUGSTAT', '0') 
@@ -74,8 +74,11 @@ def mqtt_send(topic, payload, retain=False):
 def mqtt_receive(client, userdata, msg):
     """receive a command to operate on docker instance"""
     try:
-        print("received a message on %s with message ""%s""" % topic,msg)
-        
+        print('received a message on "%s" with message "%s"' % ( msg.topic,msg.payload.decode("utf-8")))
+        topicargs = msg.topic.split('/')
+        # container is last in the topic split.
+        container = topicargs[len(topicargs)-1]
+        print("Found a docker container command for ""%s""" % container)
     except Exception as ex:
         print("Exception in receive message: " + str(ex))
         
@@ -178,7 +181,9 @@ if __name__ == '__main__':
         mqtt.will_set(f'{MQTT_TOPIC_PREFIX}/{DOCKER2MQTT_HOSTNAME}/status', 'offline', qos=MQTT_QOS, retain=True)
         mqtt.connect(MQTT_HOST, MQTT_PORT, MQTT_TIMEOUT)
         mqtt.on_message = mqtt_receive
-        #self.client.message_callback_add(self.basetopic +"/+/picture",self.mqtt_on_picture_message)
+        #mqtt.message_callback_add(f'{MQTT_TOPIC_PREFIX}/{DOCKER2MQTT_HOSTNAME}/command/#',mqtt_receive)
+        
+        mqtt.subscribe(f'{MQTT_TOPIC_PREFIX}/{DOCKER2MQTT_HOSTNAME}/command/#')
         mqtt.loop_start()
         mqtt_send(f'{MQTT_TOPIC_PREFIX}/{DOCKER2MQTT_HOSTNAME}/status', 'online', retain=True)
 
@@ -201,9 +206,9 @@ if __name__ == '__main__':
             docker_stats_t.start()
             if bDebugStat: print("Starting stats started")
 
-        if started == False:
-            print("Nothing started")
-            sys.exit(0)
+        #if started == False:
+        #    print("Nothing started")
+        #    sys.exit(0)
 
         line = ""
         linestats = ""
@@ -380,7 +385,11 @@ if __name__ == '__main__':
 
                 #if bDebug: print ("STATS: %s" % linestats)
             #if docker_stats.qsize() > 0:
-            sleep(0.2)
+            try:
+                mqtt.loop(0.2)
+            except:
+                mqtt.connect(MQTT_HOST, MQTT_PORT, MQTT_TIMEOUT)
+            #sleep(0.2)
         #while True:
     except Exception as ex:
         print("Error processing: " + str(ex))
