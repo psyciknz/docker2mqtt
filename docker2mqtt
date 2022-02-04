@@ -34,6 +34,7 @@ MQTT_TOPIC_PREFIX = environ.get('MQTT_TOPIC_PREFIX', 'docker')
 MQTT_QOS = int(environ.get('MQTT_QOS', 1))
 MQTT_ATTRIBUTE = int(environ.get('MQTT_ATTRIBUTE',0))
 WATCHED_EVENTS = ('create', 'destroy', 'die', 'pause', 'rename', 'start', 'stop', 'unpause')
+DOCKER_HOST = environ.get('DOCKER_HOST','')
 STATS = environ.get('STATS','0')
 STATSRECORDSECONDS = environ.get('STATSRECORDSECONDS',30)
 EVENTS = environ.get('EVENTS','0')
@@ -48,7 +49,11 @@ pending_destroy_operations = {}
 docker_events_cmd = ['docker', 'events', '-f', 'type=container', '--format', '{{json .}}']
 docker_ps_cmd = ['docker', 'ps', '-a', '--format', '{{json .}}']
 #docker_stats_cmd = ['docker','stats','--format','{\"container\":\"{{ .Name }}\",\"memory\":{\"raw\":\"{{ .MemUsage }}\",\"percent\":\"{{ .MemPerc }}\"},\"cpu\":\"{{ .CPUPerc }}\"}']
-docker_stats_cmd = ['docker','stats','--format','{{json .}}']
+if DOCKER_HOST == '':
+    docker_stats_cmd = ['docker','stats','--format','{{json .}}']
+else:
+    docker_stats_cmd = ['docker','-H',DOCKER_HOST,'stats','--format','{{json .}}','--no-stream']
+
 invalid_ha_topic_chars = re.compile(r'[^a-zA-Z0-9_-]')
 
 

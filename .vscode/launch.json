@@ -10,16 +10,17 @@
             "request": "launch",
             "program": "${workspaceFolder}/docker2mqtt",
             "console": "integratedTerminal",
+            
             "env": {
                 "DOCKER2MQTT_HOSTNAME": "${workspaceFolderBasename}",
                 "MQTT_CLIENT_ID": "${workspaceFolderBasename}",
-                "MQTT_HOST": "localhost",
                 "MQTT_PORT": "1883",
                 "MQTT_TOPIC_PREFIX": "docker",
                 "MQTT_ATTRIBUTE": "0",
                 "EVENTS": "1",
                 "STATS" : "0"
-            }
+            },
+            "envFile": "${workspaceFolder}/.env"
         },
         {
             "name": "Python: Stats",
@@ -30,13 +31,13 @@
             "env": {
                 "DOCKER2MQTT_HOSTNAME": "${workspaceFolderBasename}",
                 "MQTT_CLIENT_ID": "${workspaceFolderBasename}",
-                "MQTT_HOST": "localhost",
                 "MQTT_PORT": "1883",
                 "MQTT_TOPIC_PREFIX": "docker",
                 "MQTT_ATTRIBUTE": "0",
                 "EVENTS": "0",
                 "STATS" : "1"
-            }
+            },
+            "envFile": "${workspaceFolder}/.env"
         },
         {
             "name": "Python: Nothing",
@@ -47,7 +48,6 @@
             "env": {
                 "DOCKER2MQTT_HOSTNAME": "${workspaceFolderBasename}",
                 "MQTT_CLIENT_ID": "${workspaceFolderBasename}",
-                "MQTT_HOST": "localhost",
                 "MQTT_PORT": "1883",
                 "MQTT_TOPIC_PREFIX": "docker",
                 "MQTT_ATTRIBUTE": "0",
@@ -64,7 +64,6 @@
             "env": {
                 "DOCKER2MQTT_HOSTNAME": "${workspaceFolderBasename}",
                 "MQTT_CLIENT_ID": "${workspaceFolderBasename}",
-                "MQTT_HOST": "localhost",
                 "MQTT_PORT": "1883",
                 "MQTT_TOPIC_PREFIX": "docker",
                 "MQTT_ATTRIBUTE": "0",
